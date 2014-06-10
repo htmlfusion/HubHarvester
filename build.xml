@@ -1,27 +1,11 @@
-<project name="HubHarvester" basedir="." default="dist">
-    <property environment="go"/>
-
-    <condition property="pem" value="${go.PEM}" else="HubHarvester.pem">
-        <isset property="${go.PEM}"/>
-    </condition>
-
-    <condition property="chrome-executable" value="${go.CHROME}" else="/usr/bin/google-chrome">
-        <isset property="${go.CHROME}"/>
-    </condition>
-
-    <echo message="Using chrome executable CHROME=${chrome-executable}"/>
-    <echo message="Using pem file PEM=${pem}"/>
+<project name="HubHarvester" basedir="." default="build">
 
     <target name="prepare">
         <delete dir="build"/>
         <mkdir dir="build"/>
     </target>
 
-    <target name="dist" depends="prepare">
-        <exec executable="${chrome-executable}" dir="${basedir}/..">
-            <arg value="--pack-extension=HubHarvester"/>
-            <arg value="--pack-extension-key=${pem}"/>
-        </exec>
-        <copy file="../HubHarvester.crx" tofile="build/HubHarvester.crx"/>
+    <target name="build" depends="prepare">
+        <zip destfile="build/HubHarvester.zip" basedir="src/" />
     </target>
 </project>
