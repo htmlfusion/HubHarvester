@@ -8,7 +8,7 @@ function updatePage() {
         {
             appendGitHub();
         }
-        else if (window.location.href.match(/^https:\/\/huboard.com\/.*$/))
+        else if (window.location.href.match(/^https:\/\/huboard.com\/.*\/.*#\/issues\/(.*\d+)$/))
         {
             appendHuboard();
         }
