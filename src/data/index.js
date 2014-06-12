@@ -3,7 +3,6 @@ window.setInterval(function() { updatePage(); }, 3000);
 
 function updatePage() {
     if (document.getElementsByClassName("harvest-timer").length == 0) {
-        addScriptElement();
         if (window.location.href.match(/^https:\/\/github.com\/(.*?)\/(.*?)\/(.*\d+)$/))
         {
             appendGitHub();
@@ -43,15 +42,19 @@ function createTrackingElement(data) {
 
 function appendHuboard() {
     if (document.getElementsByClassName('fullscreen-header').length > 0) {
+        addScriptElement();
         var basic = document.getElementsByClassName('fullscreen-header')[0].innerText.match(/^(.*) #(\d+)/);
         var url = window.location.href.match(/^https:\/\/huboard.com\/(.*?)\/(.*?)#\/issues\/(.*\d+)$/);
         var data = { 'account' : url[1], 'project' : url[2], 'id' : 'issues/' + basic[2], 'name' : basic[1] };
         var trackingElement = createTrackingElement(data);
         trackingElement.style.cssFloat = 'right';
         document.getElementsByClassName('fullscreen-header')[0].children[0].appendChild(trackingElement);
+
+        console.log('harvest update');
     }
 }
 function appendGitHub() {
+    addScriptElement();
     var url = window.location.href.match(/^https:\/\/github.com\/(.*?)\/(.*?)\/(.*\d+)$/);
     var name = document.getElementsByClassName('js-issue-title')[0].innerHTML;
     var data = { 'account' : url[1], 'project' : url[2], 'id' : url[3], 'name' : name };
@@ -59,4 +62,6 @@ function appendGitHub() {
     trackingElement.style.width = '20px';
     trackingElement.style.height = '20px';
     document.getElementsByClassName('gh-header-number')[0].appendChild(trackingElement);
+
+    console.log('harvest update');
 }
