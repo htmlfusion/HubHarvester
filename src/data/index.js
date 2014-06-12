@@ -49,8 +49,6 @@ function appendHuboard() {
         var trackingElement = createTrackingElement(data);
         trackingElement.style.cssFloat = 'right';
         document.getElementsByClassName('fullscreen-header')[0].children[0].appendChild(trackingElement);
-
-        console.log('harvest update');
     }
 }
 function appendGitHub() {
@@ -60,8 +58,8 @@ function appendGitHub() {
     var data = { 'account' : url[1], 'project' : url[2], 'id' : url[3], 'name' : name };
     var trackingElement = createTrackingElement(data);
     trackingElement.style.width = '20px';
-    trackingElement.style.height = '20px';
-    document.getElementsByClassName('gh-header-number')[0].appendChild(trackingElement);
-
-    console.log('harvest update');
+    trackingElement.style.height = '26px';
+    trackingElement.style.marginLeft = '5px';
+    trackingElement.style.float = 'left';
+    document.getElementsByClassName('gh-header-actions')[0].appendChild(trackingElement);
 }
