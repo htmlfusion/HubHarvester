@@ -41,14 +41,18 @@ function createTrackingElement(data) {
 }
 
 function appendHuboard() {
-    if (document.getElementsByClassName('fullscreen-header').length > 0) {
+    if (document.getElementsByTagName('h2').length > 0) {
         addScriptElement();
-        var basic = document.getElementsByClassName('fullscreen-header')[0].innerText.match(/^(.*) #(\d+)/);
+        var issue_id = document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].innerText.replace('#', '');
+        var issue_title = document.getElementsByTagName('h2')[0].innerText.replace(' #' + issue_id, '');
         var url = window.location.href.match(/^https:\/\/huboard.com\/(.*?)\/(.*?)#\/issues\/(.*\d+)$/);
-        var data = { 'account' : url[1], 'project' : url[2], 'id' : 'issues/' + basic[2], 'name' : basic[1] };
+        var data = { 'account' : url[1], 'project' : url[2], 'id' : 'issues/' + issue_id, 'name' : issue_title };
         var trackingElement = createTrackingElement(data);
-        trackingElement.style.cssFloat = 'right';
-        document.getElementsByClassName('fullscreen-header')[0].children[0].appendChild(trackingElement);
+        trackingElement.style.cssFloat = 'left';
+        trackingElement.style.marginTop = '4px';
+        trackingElement.style.marginRight = '4px';
+        var parent = document.getElementsByTagName('h2')[0];
+        parent.insertBefore(trackingElement, parent.firstChild);
     }
 }
 function appendGitHub() {
