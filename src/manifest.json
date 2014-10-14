@@ -1,7 +1,7 @@
 {
    "name": "HubHarvester Time Tracking",
    "short_name": "HubHarvester",
-   "version": "1.0.3",
+   "version": "1.0.4",
    "manifest_version": 2,
    "description": "A chrome extension to integrate harvest time tracking with GitHub and GitHub specific tools (like Huboard).",
    "icons": {
