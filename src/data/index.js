@@ -64,6 +64,7 @@ function appendGitHub() {
     trackingElement.style.width = '20px';
     trackingElement.style.height = '26px';
     trackingElement.style.marginLeft = '5px';
+    trackingElement.style.paddingTop = '5px';
     trackingElement.style.float = 'left';
     document.getElementsByClassName('gh-header-actions')[0].appendChild(trackingElement);
 }
