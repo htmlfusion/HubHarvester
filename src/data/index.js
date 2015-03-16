@@ -97,14 +97,14 @@ function TrackingPage (provider) {
         }
         return this;
     };
-    this.addScriptElement = function (applicationName, permalink) {
+    this.addScriptElement = function (applicationName) {
         var s = document.createElement('script');
         var ph = document.getElementsByTagName('script')[0];
 
         s.type = 'text/javascript';
         s.innerHTML =   "window._harvestPlatformConfig = { " +
         "'applicationName': '" + applicationName + "', " +
-        "'permalink': '" + permalink + "' " +
+        "'permalink': '" + window.location.href + "' " +
         "}; " +
         "var s = document.createElement('script');" +
         "s.src = '//platform.harvestapp.com/assets/platform.js';" +
@@ -121,14 +121,6 @@ function TrackingPage (provider) {
 function GitHub (trackingElement) {
     this.element   = trackingElement;
     this.appName   = 'GitHub';
-    this.permalink = 'https://github.com/%ACCOUNT_ID%/%PROJECT_ID%/%ITEM_ID%';
-
-    this.getAppName = function () {
-        return this.appName;
-    };
-    this.getPermalink = function () {
-        return this.permalink;
-    };
 
     this.parseElement = function () {
         var url     = window.location.href.match(/^https:\/\/github.com\/(.*?)\/(.*?)\/(.*\d+)$/);
@@ -146,7 +138,7 @@ function GitHub (trackingElement) {
     };
     this.refresh = function (trackingPage) {
         if (this.isCurrentPage()) {
-            trackingPage.addScriptElement(this.getAppName(), this.getPermalink());
+            trackingPage.addScriptElement(this.appName);
 
             var trackingElement = this.parseElement();
             var domElement      = this.addStyles(trackingElement.dom());
@@ -162,17 +154,6 @@ function GitHub (trackingElement) {
 function HuBoard (trackingElement) {
     this.element   = trackingElement;
     this.appName   = 'HuBoard';
-    this.permalink = 'https://huboard.com/%ACCOUNT_ID%/%PROJECT_ID%#/issues/';
-
-    this.getAppName = function () {
-        return this.appName;
-    };
-    this.getPermalink = function () {
-        return this.permalink
-            + window.location.href.match(
-                /^https:\/\/huboard.com\/(.*?)\/(.*?)#\/issues\/(.*\d+)$/
-            )[3];
-    };
 
     this.parseElement = function () {
         var issue_id = document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].innerText.replace('#', '');
@@ -189,7 +170,7 @@ function HuBoard (trackingElement) {
     };
     this.refresh = function (trackingPage) {
         if (this.isCurrentPage() && document.getElementsByTagName('h2').length > 0) {
-            trackingPage.addScriptElement(this.getAppName(), this.getPermalink());
+            trackingPage.addScriptElement(this.appName);
 
             var trackingElement = this.parseElement();
             var domElement      = this.addStyles(trackingElement.dom());
@@ -207,13 +188,6 @@ function GitLab (trackingElement, activeUrl) {
     this.element   = trackingElement;
     this.activeUrl = activeUrl;
     this.appName   = 'GitLab';
-
-    this.getAppName = function () {
-        return this.appName;
-    };
-    this.getPermalink = function () {
-        return this.activeUrl + '%ACCOUNT_ID%/%PROJECT_ID%/%ITEM_ID%';
-    };
 
     this.parseElement = function () {
         var url     = window.location.href.match(new RegExp('^' + this.activeUrl + '(.*)/(.*)/(.*\\d+)$'));
@@ -237,7 +211,7 @@ function GitLab (trackingElement, activeUrl) {
     };
     this.refresh = function (trackingPage) {
         if (this.isCurrentPage()) {
-            trackingPage.addScriptElement(this.getAppName(), this.getPermalink());
+            trackingPage.addScriptElement(this.appName);
 
             var trackingElement = this.parseElement();
             var domElement      = this.addStyles(trackingElement.dom());
