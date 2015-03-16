@@ -20,6 +20,8 @@ chrome.storage.sync.get({
     }
 
     if (isAllowedToRun(items.hubHarvesterOptions)) {
+        console.log('runssss');
+
         var page = new TrackingPage(items.hubHarvesterOptions).refresh();
         window.setInterval(function() { page.refresh(); }, 3000);
     }
@@ -81,6 +83,7 @@ function TrackingPage (provider) {
 
     this.refresh = function () {
         if (!this.trackerPresent()) {
+            console.log('refreshing');
             for(var i = 0; i < this.activePages.length; i++) {
                 this.activePages[i].refresh(this);
             }

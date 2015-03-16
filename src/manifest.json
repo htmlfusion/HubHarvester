@@ -18,6 +18,17 @@
     ],
     "persistent": true
   },
+  "content_scripts": [
+    {
+      "js": [
+        "data/index.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
   "content_security_policy": "script-src 'self' https://*.harvestapp.com; object-src 'self'",
   "permissions": [
     "storage",
