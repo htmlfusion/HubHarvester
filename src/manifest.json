@@ -1,34 +1,42 @@
 {
-   "name": "HubHarvester Time Tracking",
-   "short_name": "HubHarvester",
-   "version": "1.0.5",
-   "manifest_version": 2,
-   "description": "A chrome extension to integrate harvest time tracking with GitHub and GitHub specific tools (like Huboard).",
-   "icons": {
-      "128": "img/logo-128.png",
-      "48": "img/logo-48.png"
-   },
-   "background": {
-      "scripts": [ "lib/background.js" ],
-      "persistent": true
-   },
-   "content_scripts": [
-       {
-          "js": [ "data/index.js" ],
-          "matches": [
-              "https://github.com/*/issues/*",
-              "https://github.com/*/pull/*",
-              "https://huboard.com/*"
-          ]
-       }
-   ],
-   "content_security_policy": "script-src 'self' https://*.harvestapp.com; object-src 'self'",
-   "permissions": [
-      "webRequest",
-      "webRequestBlocking",
-      "https://github.com/*",
-      "https://huboard.com/*",
-      "https://*.harvestapp.com/*",
-      "tabs"
-   ]
+  "name": "HubHarvester Time Tracking",
+  "short_name": "HubHarvester",
+  "version": "1.0.5",
+  "manifest_version": 2,
+  "description": "A chrome extension to integrate harvest time tracking with GitHub and GitHub specific tools (like Huboard).",
+  "icons": {
+    "128": "img/logo-128.png",
+    "48": "img/logo-48.png"
+  },
+  "options_ui": {
+    "page": "popup.html",
+    "chrome_style": true
+  },
+  "background": {
+    "scripts": [
+      "lib/background.js",
+      "popup.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "js": [ "data/index.js" ],
+      "matches": [
+        "https://github.com/*/issues/*",
+        "https://github.com/*/pull/*",
+        "https://huboard.com/*"
+      ]
+    }
+  ],
+  "content_security_policy": "script-src 'self' https://*.harvestapp.com; object-src 'self'",
+  "permissions": [
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "https://github.com/*",
+    "https://huboard.com/*",
+    "https://*.harvestapp.com/*",
+    "tabs"
+  ]
 }

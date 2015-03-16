@@ -1,15 +1,18 @@
-var page = new TrackingPage();
-page.refresh();
+chrome.storage.sync.get({
+    noteTemplate: '#%ISSUE.ID% %ISSUE.NAME%'
+}, function(items) {
+    var page = new TrackingPage(items.noteTemplate).refresh();
+    window.setInterval(function() { page.refresh(); }, 3000);
+});
 
-window.setInterval(function() { page.refresh(); }, 3000);
-
-function TrackingElement () {
-    this.account = null;
-    this.project = null;
-    this.item    = null;
+function TrackingElement (noteTemplate) {
+    this.noteTemplate = noteTemplate;
+    this.account      = { id: null, name: null };
+    this.project      = { id: null, name: null };
+    this.item         = { id: null, name: null };
 
     this.setAccount = function (account) {
-        this.account = { 'id' : account };
+        this.account = { 'id' : account, 'name': account };
         return this;
     };
     this.setItem = function (id, name) {
@@ -26,26 +29,35 @@ function TrackingElement () {
         div.className='harvest-timer';
         div.setAttribute('data-account', JSON.stringify(this.account));
         div.setAttribute('data-project', JSON.stringify(this.project));
-        div.setAttribute('data-item', JSON.stringify(this.item));
-        console.log(div);
+        div.setAttribute('data-item', JSON.stringify(
+            { id : this.item.id, name: this.parseNoteTemplate() }
+        ));
         return div;
     };
+    this.parseNoteTemplate = function () {
+        return this.noteTemplate
+            .replace('%ITEM.ID%', this.item.id.replace('issues/', '').replace('pull/', ''))
+            .replace('%ITEM.NAME%', this.item.name)
+            .replace('%ACCOUNT.ID%', this.account.id)
+            .replace('%ACCOUNT.NAME%', this.account.name)
+            .replace('%PROJECT.ID%', this.project.id)
+            .replace('%PROJECT.NAME%', this.project.name);
+    }
 }
 
-function TrackingPage () {
+function TrackingPage (noteTemplate) {
     this.activePages = [
-        new GitHub(),
-        new HuBoard()
+        new GitHub(new TrackingElement(noteTemplate)),
+        new HuBoard(new TrackingElement(noteTemplate))
     ];
 
     this.refresh = function () {
         if (!this.trackerPresent()) {
             for(var i = 0; i < this.activePages.length; i++) {
-                if (this.activePages[i].isCurrentPage()) {
-                    this.activePages[i].refresh(this);
-                }
+                this.activePages[i].refresh(this);
             }
         }
+        return this;
     };
     this.addScriptElement = function (applicationName, permalink) {
         var s = document.createElement('script');
@@ -68,17 +80,23 @@ function TrackingPage () {
     };
 }
 
-function GitHub () {
+function GitHub (trackingElement) {
+    this.element   = trackingElement;
     this.appName   = 'GitHub';
     this.permalink = 'https://github.com/%ACCOUNT_ID%/%PROJECT_ID%/%ITEM_ID%';
 
+    this.getAppName = function () {
+        return this.appName;
+    };
+    this.getPermalink = function () {
+        return this.permalink;
+    };
+
     this.parseElement = function () {
-        var element = new TrackingElement();
         var url     = window.location.href.match(/^https:\/\/github.com\/(.*?)\/(.*?)\/(.*\d+)$/);
         var name    = document.getElementsByClassName('js-issue-title')[0].innerHTML;
-        return this.addStyles(
-            element.setAccount(url[1]).setProject(url[2]).setItem(url[3], name).dom()
-        );
+
+       return this.element.setAccount(url[1]).setProject(url[2]).setItem(url[3], name);
     };
     this.addStyles = function (element) {
         element.style.width      = '20px';
@@ -89,28 +107,41 @@ function GitHub () {
         return element;
     };
     this.refresh = function (trackingPage) {
-        trackingPage.addScriptElement(this.appName, this.permalink);
-        document.getElementsByClassName('gh-header-actions')[0].appendChild(this.parseElement());
+        if (this.isCurrentPage()) {
+            trackingPage.addScriptElement(this.getAppName(), this.getPermalink());
+
+            var trackingElement = this.parseElement();
+            var domElement      = this.addStyles(trackingElement.dom());
+
+            document.getElementsByClassName('gh-header-actions')[0].appendChild(domElement);
+        }
     };
     this.isCurrentPage = function() {
         return window.location.href.match(/^https:\/\/github.com\/(.*?)\/(.*?)\/(.*\d+)$/);
     };
 }
 
-function HuBoard () {
+function HuBoard (trackingElement) {
+    this.element   = trackingElement;
     this.appName   = 'HuBoard';
     this.permalink = 'https://huboard.com/%ACCOUNT_ID%/%PROJECT_ID%#/issues/';
 
+    this.getAppName = function () {
+        return this.appName;
+    };
+    this.getPermalink = function () {
+        return this.permalink
+            + window.location.href.match(
+                /^https:\/\/huboard.com\/(.*?)\/(.*?)#\/issues\/(.*\d+)$/
+            )[3];
+    };
+
     this.parseElement = function () {
-        var element = new TrackingElement();
         var issue_id = document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].innerText.replace('#', '');
         var issue_title = document.getElementsByTagName('h2')[0].innerText.replace('#' + issue_id, '').trim();
         var url = window.location.href.match(/^https:\/\/huboard.com\/(.*?)\/(.*?)#\/issues\/(.*\d+)$/);
 
-        this.permalink = this.permalink + url[3];
-        return this.addStyles(
-            element.setAccount(url[1]).setProject(url[2]).setItem('issues/' + issue_id, issue_title).dom()
-        );
+        return this.element.setAccount(url[1]).setProject(url[2]).setItem('issues/' + issue_id, issue_title);
     };
     this.addStyles = function(element) {
         element.style.cssFloat    = 'left';
@@ -119,18 +150,17 @@ function HuBoard () {
         return element;
     };
     this.refresh = function (trackingPage) {
-        trackingPage.addScriptElement(this.appName, this.permalink);
-        if (document.getElementsByTagName('h2').length > 0) {
+        if (this.isCurrentPage() && document.getElementsByTagName('h2').length > 0) {
+            trackingPage.addScriptElement(this.getAppName(), this.getPermalink());
+
+            var trackingElement = this.parseElement();
+            var domElement      = this.addStyles(trackingElement.dom());
+
             var parent = document.getElementsByTagName('h2')[0];
-            parent.insertBefore(
-                this.parseElement(),
-                parent.firstChild
-            );
+            parent.insertBefore(domElement, parent.firstChild);
         }
     };
     this.isCurrentPage = function() {
-        return window.location.href.match(
-            /^https:\/\/huboard.com\/.*\/.*#\/issues\/(.*\d+)$/
-        );
+        return window.location.href.match(/^https:\/\/huboard.com\/.*\/.*#\/issues\/(.*\d+)$/);
     };
 }
