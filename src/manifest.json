@@ -9,7 +9,7 @@
     "48": "img/logo-48.png"
   },
   "options_ui": {
-    "page": "popup.html",
+    "page": "templates/popup.html",
     "chrome_style": true
   },
   "background": {
@@ -18,21 +18,13 @@
     ],
     "persistent": true
   },
-  "content_scripts": [
-    {
-      "js": [ "data/index.js" ],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ]
-    }
-  ],
   "content_security_policy": "script-src 'self' https://*.harvestapp.com; object-src 'self'",
   "permissions": [
     "storage",
     "webRequest",
     "webRequestBlocking",
     "http://*/",
-    "https://*/"
+    "https://*/",
+    "tabs"
   ]
 }

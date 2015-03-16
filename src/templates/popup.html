@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HubHarvester Extension Options</title>
+    <style>
+        body { padding: 10px; width:600px }
+        label { width: 100px; display: inline-block; }
+        input { width: 400px; }
+        h1 { font-size: 24px; margin-bottom: 6px; }
+    </style>
+    <script src="../lib/popup.js"></script>
+</head>
+
+<body>
+    <form id="hubHarvesterOptions">
+        <div>
+            <h1><img height="24" src="../img/github.png" /></h1>
+            <div>
+                <label for="GitHub_activeUrl">URL: </label>
+                <input id="GitHub_activeUrl"
+                       name="GitHub_activeUrl"
+                       type="text" />
+            </div>
+            <div>
+                <label for="GitHub_noteTemplate">Note:</label>
+                <input id="GitHub_noteTemplate"
+                       name="GitHub_noteTemplate"
+                       type="text" />
+            </div>
+        </div>
+        <div>
+            <h1><img height="24" src="../img/huboard.png" /></h1>
+            <div>
+                <label for="HuBoard_activeUrl">URL: </label>
+                <input id="HuBoard_activeUrl"
+                       name="HuBoard_activeUrl"
+                       type="text" />
+            </div>
+            <div>
+                <label for="HuBoard_noteTemplate">Note:</label>
+                <input id="HuBoard_noteTemplate"
+                       name="HuBoard_noteTemplate"
+                       type="text" />
+            </div>
+        </div>
+
+        <br><br><br><button type="button" id="save">Save</button>
+    </form>
+</body>
+</html>

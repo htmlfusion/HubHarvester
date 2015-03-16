@@ -1,12 +1,18 @@
 chrome.storage.sync.get({
-    activeUrls: [
-        "https://github.com/",
-        "https://huboard.com/"
-    ]
+    hubHarvesterOptions: {
+        GitHub: {
+            activeUrl: 'https://github.com/',
+            noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
+        },
+        HuBoard: {
+            activeUrl: 'https://huboard.com/',
+            noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
+        }
+    }
 }, function(items) {
     var urls = [];
-    for(var i = 0; i < items.activeUrls.length; i++) {
-        urls.push(items.activeUrls[i] + '*');
+    for (var name in items.hubHarvesterOptions) {
+        urls.push(items.hubHarvesterOptions[name].activeUrl + '*');
     }
 
     chrome.webRequest.onHeadersReceived.addListener(
