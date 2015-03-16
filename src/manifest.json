@@ -14,8 +14,7 @@
   },
   "background": {
     "scripts": [
-      "lib/background.js",
-      "popup.js"
+      "lib/background.js"
     ],
     "persistent": true
   },
@@ -23,9 +22,8 @@
     {
       "js": [ "data/index.js" ],
       "matches": [
-        "https://github.com/*/issues/*",
-        "https://github.com/*/pull/*",
-        "https://huboard.com/*"
+        "http://*/*",
+        "https://*/*"
       ]
     }
   ],
@@ -34,9 +32,7 @@
     "storage",
     "webRequest",
     "webRequestBlocking",
-    "https://github.com/*",
-    "https://huboard.com/*",
-    "https://*.harvestapp.com/*",
-    "tabs"
+    "http://*/",
+    "https://*/"
   ]
 }
