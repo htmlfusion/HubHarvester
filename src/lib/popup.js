@@ -23,6 +23,10 @@ function save_options() {
     });
 }
 
+function reset_options() {
+    chrome.storage.sync.remove(['hubHarvesterOptions']);
+}
+
 function restore_options() {
     chrome.storage.sync.get({
         hubHarvesterOptions: {
@@ -32,6 +36,10 @@ function restore_options() {
             },
             HuBoard: {
                 activeUrl: 'https://huboard.com/',
+                noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
+            },
+            GitLab: {
+                activeUrl: '',
                 noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
             }
         }

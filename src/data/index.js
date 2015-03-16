@@ -7,6 +7,10 @@ chrome.storage.sync.get({
         HuBoard: {
             activeUrl: 'https://huboard.com/',
             noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
+        },
+        GitLab: {
+            activeUrl: '',
+            noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
         }
     }
 }, function(items) {
@@ -20,8 +24,6 @@ chrome.storage.sync.get({
     }
 
     if (isAllowedToRun(items.hubHarvesterOptions)) {
-        console.log('runssss');
-
         var page = new TrackingPage(items.hubHarvesterOptions).refresh();
         window.setInterval(function() { page.refresh(); }, 3000);
     }
@@ -78,12 +80,17 @@ function TrackingPage (provider) {
             case 'HuBoard':
                 this.activePages.push(new HuBoard(new TrackingElement(provider[name].noteTemplate)));
                 break;
+            case 'GitLab':
+                this.activePages.push(new GitLab(
+                    new TrackingElement(provider[name].noteTemplate),
+                    provider[name].activeUrl
+                ));
+                break;
         }
     }
 
     this.refresh = function () {
         if (!this.trackerPresent()) {
-            console.log('refreshing');
             for(var i = 0; i < this.activePages.length; i++) {
                 this.activePages[i].refresh(this);
             }
@@ -193,5 +200,54 @@ function HuBoard (trackingElement) {
     };
     this.isCurrentPage = function() {
         return window.location.href.match(/^https:\/\/huboard.com\/.*\/.*#\/issues\/(.*\d+)$/);
+    };
+}
+
+function GitLab (trackingElement, activeUrl) {
+    this.element   = trackingElement;
+    this.activeUrl = activeUrl;
+    this.appName   = 'GitLab';
+
+    this.getAppName = function () {
+        return this.appName;
+    };
+    this.getPermalink = function () {
+        return this.activeUrl + '%ACCOUNT_ID%/%PROJECT_ID%/%ITEM_ID%';
+    };
+
+    this.parseElement = function () {
+        var url     = window.location.href.match(new RegExp('^' + this.activeUrl + '(.*)/(.*)/issues/(.*\\d+)$'));
+        var name    = document.getElementsByClassName('box-title')[0].innerHTML.trim();
+
+        return this.element.setAccount(url[1]).setProject(url[2]).setItem(url[3], name);
+    };
+    this.addStyles = function(element) {
+        element.style.display = 'inline-block';
+        element.style.float = 'right';
+        element.style.width = '10px';
+        element.style.height = '18px';
+        element.style.textAlign = 'center';
+        element.style.verticalAlign = 'middle';
+        element.style.padding = '6px 12px';
+        element.style.lineHeight = '18px';
+        element.style.fontSize = '13px';
+        element.style.cursor = 'pointer';
+        element.style.marginBottom = '0';
+        return element;
+    };
+    this.refresh = function (trackingPage) {
+        if (this.isCurrentPage()) {
+            trackingPage.addScriptElement(this.getAppName(), this.getPermalink());
+
+            var trackingElement = this.parseElement();
+            var domElement      = this.addStyles(trackingElement.dom());
+
+            document.getElementsByClassName('page-title')[0].getElementsByClassName('pull-right')[0].appendChild(domElement);
+        }
+    };
+    this.isCurrentPage = function() {
+        return window.location.href.match(
+            new RegExp('^' + this.activeUrl + '.*/.*/issues/(.*\\d+)$')
+        );
     };
 }

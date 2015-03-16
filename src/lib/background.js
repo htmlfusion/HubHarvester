@@ -7,6 +7,10 @@ chrome.storage.sync.get({
         HuBoard: {
             activeUrl: 'https://huboard.com/',
             noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
+        },
+        GitLab: {
+            activeUrl: '',
+            noteTemplate: '#%ITEM.ID% %ITEM.NAME%'
         }
     }
 }, function(items) {
