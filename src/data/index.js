@@ -216,7 +216,7 @@ function GitLab (trackingElement, activeUrl) {
     };
 
     this.parseElement = function () {
-        var url     = window.location.href.match(new RegExp('^' + this.activeUrl + '(.*)/(.*)/issues/(.*\\d+)$'));
+        var url     = window.location.href.match(new RegExp('^' + this.activeUrl + '(.*)/(.*)/(.*\\d+)$'));
         var name    = document.getElementsByClassName('box-title')[0].innerHTML.trim();
 
         return this.element.setAccount(url[1]).setProject(url[2]).setItem(url[3], name);
