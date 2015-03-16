@@ -158,7 +158,7 @@ function HuBoard (trackingElement) {
     this.parseElement = function () {
         var issue_id = document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].innerText.replace('#', '');
         var issue_title = document.getElementsByTagName('h2')[0].innerText.replace('#' + issue_id, '').trim();
-        var url = window.location.href.match(/^https:\/\/huboard.com\/(.*?)\/(.*?)#\/issues\/(.*\d+)$/);
+        var url = window.location.href.match(/^https:\/\/huboard.com\/(.*?)\/(.*?)#\/issues\/(.*\d+)/);
 
         return this.element.setAccount(url[1]).setProject(url[2]).setItem('issues/' + issue_id, issue_title);
     };
@@ -180,7 +180,7 @@ function HuBoard (trackingElement) {
         }
     };
     this.isCurrentPage = function() {
-        return window.location.href.match(/^https:\/\/huboard.com\/.*\/.*#\/issues\/(.*\d+)$/);
+        return window.location.href.match(/^https:\/\/huboard.com\/.*\/.*#\/issues\/(.*\d+)/);
     };
 }
 
