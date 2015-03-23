@@ -16,7 +16,9 @@ chrome.storage.sync.get({
 }, function(items) {
     var urls = [];
     for (var name in items.hubHarvesterOptions) {
-        urls.push(items.hubHarvesterOptions[name].activeUrl + '*');
+        if (items.hubHarvesterOptions[name].activeUrl != '') {
+            urls.push(items.hubHarvesterOptions[name].activeUrl + '*');
+        }
     }
 
     chrome.webRequest.onHeadersReceived.addListener(

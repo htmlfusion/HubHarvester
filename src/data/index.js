@@ -220,6 +220,10 @@ function GitLab (trackingElement, activeUrl) {
         }
     };
     this.isCurrentPage = function() {
+        if (this.activeUrl == '') {
+            return false;
+        }
+
         return window.location.href.match(
             new RegExp('^' + this.activeUrl + '.*/.*/issues/(.*\\d+)$')
         );
