@@ -123,7 +123,7 @@ function GitHub (trackingElement) {
     this.appName   = 'GitHub';
 
     this.parseElement = function () {
-        var url     = window.location.href.match(/^https:\/\/github.com\/(.*?)\/(.*?)\/(.*\d+)$/);
+        var url     = window.location.href.split('#')[0].match(/^https:\/\/github.com\/(.*?)\/(.*?)\/(.*\d+)$/);
         var name    = document.getElementsByClassName('js-issue-title')[0].innerHTML;
 
         return this.element.setAccount(url[1]).setProject(url[2]).setItem(url[3], name);
