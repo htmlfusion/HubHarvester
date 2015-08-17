@@ -1,2 +1,2 @@
 language: javascript
-script: bundle exec ant build
+script: ant build
